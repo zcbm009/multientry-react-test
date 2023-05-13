@@ -1,3 +1,37 @@
+# 主要内容
+
+### 练习目的
+
+测试关于多入口项目应用的创建，即存在多个页面，多个入口，而不是单页面应用
+
+### 练习说明
+
+创建多个html页面，分为主页、帮助页面、个人信息页面，测试一下多页面应用的使用。实现多个页面的单独渲染以及页面跳转。
+
+### 遇到的问题
+
+1. 进行react多页面入口的创建思路与过程
+   1. [参考内容一](https://blog.csdn.net/qq_38036198/article/details/111251416)
+   2. [参考内容二](https://blog.csdn.net/zhengjie0722/article/details/108475854)
+
+        创建应用➜暴露出webpack配置并重新安装安装依赖➜修改入口文件配置以及html模板（HtmlWebpackPlugin）配置➜`npm run build`进行调试直至打包内容出现➜优化并运行`npm run start`命令测试
+2. 多入口配置后，build项目时出现`Cannot read property ‘filter’ of undefined`问题
+   1. [参考解决方案](https://blog.csdn.net/q1519187064/article/details/105842481)
+      
+      主要是在webpack.config.js文件中，存在一个`WebpackManifestPlugin`的配置，其中关于generate的代码存在问题，由于原来是单页面应用，后来改成了多页面应用，入口列表就变化了，所以出现了此问题，解决方式是将generate注释掉使用默认的内容，或者自己去处理逻辑。
+
+
+### 修改要点
+
+1. 项目在eject之后需要重新运行`npm run install`安装依赖
+2. 主要修改内容有入口配置以及htmlWebPackPlugin插件列表的配置
+3. 项目入口及相关路径配置在`paths`文件下
+4. 添加了`multiEntry.js`文件来处理新的入口，如果要添加入口则需要在pageList上添加入口名称
+5. 关于`index`模块的内容没有做多大的改变，只是改变了一下路径，该模块与其他模块单独处理，不放到`multiEntry`中处理
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -70,10 +104,3 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
 
-### 练习目的
-
-测试关于多入口项目应用的创建，即存在多个页面，多个入口，而不是单页面应用
-
-### 练习说明
-
-创建多个html页面，分为主页、帮助页面、个人信息页面，测试一下多页面应用的使用。实现多个页面的单独渲染以及页面跳转。

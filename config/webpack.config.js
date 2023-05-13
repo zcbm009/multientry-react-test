@@ -1,5 +1,7 @@
 'use strict';
 
+console.error("loading webpack.config.js");
+
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
@@ -43,6 +45,8 @@ const babelRuntimeEntryHelpers = require.resolve(
 const babelRuntimeRegenerator = require.resolve('@babel/runtime/regenerator', {
   paths: [babelRuntimeEntry],
 });
+
+const multiEntry = require('./multiEntry')
 
 // Some apps do not need the benefits of saving a web request, so not inlining the chunk
 // makes for a smoother build process.
@@ -185,7 +189,6 @@ module.exports = function (webpackEnv) {
     }
     return loaders;
   };
-
   return {
     target: ['browserslist'],
     // Webpack noise constrained to errors and warnings
@@ -197,10 +200,13 @@ module.exports = function (webpackEnv) {
       ? shouldUseSourceMap
         ? 'source-map'
         : false
-      : isEnvDevelopment && 'cheap-module-source-map',
+      : isEnvDevelopment && 'cheap-module-source-map',           
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
-    entry: paths.appIndexJs,
+    entry: {
+      main: paths.appIndexJs,
+      ...multiEntry.entryObj
+    },
     output: {
       // The build folder.
       path: paths.appBuild,
@@ -570,6 +576,8 @@ module.exports = function (webpackEnv) {
           {
             inject: true,
             template: paths.appHtml,
+            chunks: ['main'],
+            filename: `index.html`,
           },
           isEnvProduction
             ? {
@@ -589,6 +597,7 @@ module.exports = function (webpackEnv) {
             : undefined
         )
       ),
+      ...multiEntry.getHtmlWebpackPluginList(isEnvProduction),
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.
       // https://github.com/facebook/create-react-app/issues/5358
@@ -637,7 +646,8 @@ module.exports = function (webpackEnv) {
       new WebpackManifestPlugin({
         fileName: 'asset-manifest.json',
         publicPath: paths.publicUrlOrPath,
-        generate: (seed, files, entrypoints) => {
+        // 与multi entry功能冲突，注释后使用默认内容
+        /* generate: (seed, files, entrypoints) => {
           const manifestFiles = files.reduce((manifest, file) => {
             manifest[file.name] = file.path;
             return manifest;
@@ -650,7 +660,7 @@ module.exports = function (webpackEnv) {
             files: manifestFiles,
             entrypoints: entrypointFiles,
           };
-        },
+        }, */
       }),
       // Moment.js is an extremely popular library that bundles large locale files
       // by default due to how webpack interprets its code. This is a practical
