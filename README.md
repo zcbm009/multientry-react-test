@@ -68,3 +68,12 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+### 练习目的
+
+测试关于多入口项目应用的创建，即存在多个页面，多个入口，而不是单页面应用
+
+### 练习说明
+
+创建多个html页面，分为主页、帮助页面、个人信息页面，测试一下多页面应用的使用。实现多个页面的单独渲染以及页面跳转。
